@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/editTextBookTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Kitap Başlığı"
+        android:inputType="text"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/editTextBookAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Yazar"
+        android:inputType="text"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/editTextBookCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Kategori"
+        android:inputType="text"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/editTextBookComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Yorum"
+        android:inputType="textMultiLine"
+        android:padding="10dp"/>
+
+    <Button
+        android:id="@+id/btnSaveBook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Kitap Kaydet"
+        android:layout_marginTop="16dp"
+        android:padding="10dp"/>
+</LinearLayout>
