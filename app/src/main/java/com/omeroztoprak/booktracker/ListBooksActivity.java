@@ -1,14 +1,22 @@
 package com.omeroztoprak.booktracker;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListBooksActivity extends AppCompatActivity {
 
-    private ListView listViewBooks;
+    private RecyclerView recyclerViewBooks;
+    private BookAdapter bookAdapter;
+    private List<Book> bookList;
     private DatabaseHelper databaseHelper;
 
     @Override
@@ -16,14 +24,32 @@ public class ListBooksActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_books);
 
-        listViewBooks = findViewById(R.id.listViewBooks);
+        recyclerViewBooks = findViewById(R.id.recyclerViewBooks);
+        recyclerViewBooks.setLayoutManager(new LinearLayoutManager(this));
+
         databaseHelper = new DatabaseHelper(this);
 
-        Cursor cursor = databaseHelper.getAllBooks();
-        String[] fromColumns = {DatabaseHelper.COLUMN_BOOK_TITLE, DatabaseHelper.COLUMN_BOOK_AUTHOR};
-        int[] toViews = {android.R.id.text1, android.R.id.text2};
+        bookList = getBooksFromDatabase();
+        bookAdapter = new BookAdapter(bookList);
+        recyclerViewBooks.setAdapter(bookAdapter);
+    }
 
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_2, cursor, fromColumns, toViews, 0);
-        listViewBooks.setAdapter(adapter);
+    private List<Book> getBooksFromDatabase() {
+        List<Book> books = new ArrayList<>();
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_BOOKS, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_TITLE));
+                String author = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_AUTHOR));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_CATEGORY));
+                String comment = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_COMMENT));
+                books.add(new Book(title, author, category, comment));
+            }
+            cursor.close();
+        }
+
+        return books;
     }
 }

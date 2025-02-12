@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="#fafafa">
+
+    <TextView
+        android:id="@+id/tv_main_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BookTracker"
+        android:textSize="36sp"
+        android:textColor="#212121"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:gravity="center"/>
 
     <Button
         android:id="@+id/btnAddBook"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Kitap Kaydet"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:background="@color/colorPrimary"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"/>
+        android:layout_below="@id/tv_main_title"
+        android:layout_marginTop="40dp"
+        android:padding="16dp"/>
 
     <Button
         android:id="@+id/btnListBooks"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Kitaplarımı Listele"
-        android:layout_below="@id/btnAddBook"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:background="@color/colorPrimary"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_below="@id/btnAddBook"
+        android:layout_marginTop="20dp"
+        android:padding="16dp"/>
 
 </RelativeLayout>

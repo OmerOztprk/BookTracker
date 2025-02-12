@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "BookTrackerDB";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     public static final String TABLE_USERS = "Users";
     public static final String COLUMN_ID = "id";
@@ -22,6 +22,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BOOK_AUTHOR = "author";
     public static final String COLUMN_BOOK_CATEGORY = "category";
     public static final String COLUMN_BOOK_COMMENT = "comment";
+
+    public static final String TABLE_CATEGORIES = "Categories";
+    public static final String COLUMN_CATEGORY_ID = "category_id";
+    public static final String COLUMN_CATEGORY_NAME = "category_name";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,16 +48,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_BOOK_COMMENT + " TEXT"
                 + ")";
         db.execSQL(CREATE_BOOKS_TABLE);
+
+        String CREATE_CATEGORIES_TABLE = "CREATE TABLE " + TABLE_CATEGORIES + "("
+                + COLUMN_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_CATEGORY_NAME + " TEXT"
+                + ")";
+        db.execSQL(CREATE_CATEGORIES_TABLE);
+
+        String[] categories = {"Edebiyat", "Tarih", "Bilim", "Sanat", "Felsefe"};
+        for (String category : categories) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_CATEGORY_NAME, category);
+            db.insert(TABLE_CATEGORIES, null, values);
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS);
-            onCreate(db);
+        if (oldVersion < 4) {  // Veritabanı versiyonunu kontrol et
+            // Tabloyu sil
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);  // Users tablosunu sil
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS);  // Books tablosunu sil
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);  // Categories tablosunu sil
+            onCreate(db);  // Yeniden oluştur
         }
     }
+
 
     public boolean checkUserCredentials(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();

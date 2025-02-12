@@ -3,10 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp"
+    android:background="#fafafa"
+    android:gravity="top|center_horizontal">
 
-    <ListView
-        android:id="@+id/listViewBooks"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BookTracker"
+        android:textSize="36sp"
+        android:textColor="#212121"
+        android:textStyle="bold"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_books_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kitap Listesi"
+        android:textSize="24sp"
+        android:textColor="#212121"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewBooks"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:background="@android:color/white"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"/>
+
 </LinearLayout>

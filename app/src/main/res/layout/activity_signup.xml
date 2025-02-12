@@ -2,43 +2,89 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fafafa"
+    android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BookTracker"
+        android:textSize="36sp"
+        android:textColor="#212121"
+        android:textStyle="bold"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:text="Hesap Oluştur"
+        android:textColor="#212121"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/et_username_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_edittext"
         android:hint="Kullanıcı Adı"
-        android:inputType="text" />
+        android:inputType="text"
+        android:padding="14dp"
+        android:textColor="#212121"
+        android:textColorHint="#9e9e9e"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/et_password_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_edittext"
         android:hint="Şifre"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:padding="14dp"
+        android:textColor="#212121"
+        android:textColorHint="#9e9e9e"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/et_confirm_password_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/rounded_edittext"
         android:hint="Şifreyi Doğrula"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:padding="14dp"
+        android:textColor="#212121"
+        android:textColorHint="#9e9e9e"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btn_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorPrimary"
+        android:padding="14dp"
         android:text="Hesap Oluştur"
-        android:textColor="@android:color/white" />
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/tv_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
         android:text="Zaten Hesabınız Var? Giriş Yap"
         android:textColor="@android:color/holo_blue_dark"
-        android:layout_gravity="center" />
+        android:textSize="16sp" />
 
 </LinearLayout>
