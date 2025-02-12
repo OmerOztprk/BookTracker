@@ -3,8 +3,6 @@ package com.omeroztoprak.booktracker;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +28,7 @@ public class ListBooksActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         bookList = getBooksFromDatabase();
-        bookAdapter = new BookAdapter(bookList);
+        bookAdapter = new BookAdapter(bookList, databaseHelper, this);
         recyclerViewBooks.setAdapter(bookAdapter);
     }
 
@@ -41,11 +39,12 @@ public class ListBooksActivity extends AppCompatActivity {
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_ID));
                 String title = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_TITLE));
                 String author = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_AUTHOR));
                 String category = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_CATEGORY));
                 String comment = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOOK_COMMENT));
-                books.add(new Book(title, author, category, comment));
+                books.add(new Book(id, title, author, category, comment));
             }
             cursor.close();
         }

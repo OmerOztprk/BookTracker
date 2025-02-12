@@ -65,12 +65,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 4) {  // Veritabanı versiyonunu kontrol et
-            // Tabloyu sil
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);  // Users tablosunu sil
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS);  // Books tablosunu sil
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);  // Categories tablosunu sil
-            onCreate(db);  // Yeniden oluştur
+        if (oldVersion < 4) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
+            onCreate(db);
         }
     }
 
@@ -118,5 +117,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_BOOK_TITLE + ", "
                 + COLUMN_BOOK_AUTHOR + " FROM "
                 + TABLE_BOOKS, null);
+    }
+    public boolean deleteBook(int bookId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_BOOKS, COLUMN_BOOK_ID + "=?", new String[]{String.valueOf(bookId)});
+        return result > 0;
+    }
+
+    public boolean updateBookComment(int bookId, String newComment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_BOOK_COMMENT, newComment);
+
+        int result = db.update(TABLE_BOOKS, values, COLUMN_BOOK_ID + "=?", new String[]{String.valueOf(bookId)});
+
+        return result > 0;
     }
 }
