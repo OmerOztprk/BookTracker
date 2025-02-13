@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "BookTrackerDB";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     public static final String TABLE_USERS = "Users";
     public static final String COLUMN_ID = "id";
@@ -22,6 +22,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BOOK_AUTHOR = "author";
     public static final String COLUMN_BOOK_CATEGORY = "category";
     public static final String COLUMN_BOOK_COMMENT = "comment";
+    public static final String COLUMN_USER_ID = "user_id";
+
 
     public static final String TABLE_CATEGORIES = "Categories";
     public static final String COLUMN_CATEGORY_ID = "category_id";
@@ -45,7 +47,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_BOOK_TITLE + " TEXT,"
                 + COLUMN_BOOK_AUTHOR + " TEXT,"
                 + COLUMN_BOOK_CATEGORY + " TEXT,"
-                + COLUMN_BOOK_COMMENT + " TEXT"
+                + COLUMN_BOOK_COMMENT + " TEXT,"
+                + COLUMN_USER_ID + " INTEGER, "
+                + "FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ")"
                 + ")";
         db.execSQL(CREATE_BOOKS_TABLE);
 
@@ -65,7 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 4) {
+        if (oldVersion < 5) {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIES);
@@ -74,17 +78,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean checkUserCredentials(String username, String password) {
+    public int checkUserCredentialsAndGetId(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USERS + " WHERE "
+        Cursor cursor = db.rawQuery("SELECT " + COLUMN_ID + " FROM " + TABLE_USERS + " WHERE "
                 + COLUMN_USERNAME + "=? AND " + COLUMN_PASSWORD + "=?", new String[]{username, password});
 
         if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            int userId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
             cursor.close();
-            return true;
+            return userId;
         } else {
             cursor.close();
-            return false;
+            return -1;
         }
     }
 
@@ -98,26 +104,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public boolean addBook(String title, String author, String category, String comment) {
+    public boolean addBook(int userId, String title, String author, String category, String comment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_BOOK_TITLE, title);
         values.put(COLUMN_BOOK_AUTHOR, author);
         values.put(COLUMN_BOOK_CATEGORY, category);
         values.put(COLUMN_BOOK_COMMENT, comment);
+        values.put(COLUMN_USER_ID, userId);
 
         long result = db.insert(TABLE_BOOKS, null, values);
         return result != -1;
     }
 
-    public Cursor getAllBooks() {
+    public Cursor getBooksByUserId(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT "
-                + COLUMN_BOOK_ID + " as _id, "
-                + COLUMN_BOOK_TITLE + ", "
-                + COLUMN_BOOK_AUTHOR + " FROM "
-                + TABLE_BOOKS, null);
+                        + COLUMN_BOOK_ID + " as _id, "
+                        + COLUMN_BOOK_TITLE + ", "
+                        + COLUMN_BOOK_AUTHOR + " FROM "
+                        + TABLE_BOOKS + " WHERE " + COLUMN_USER_ID + " = ?",
+                new String[]{String.valueOf(userId)});
     }
+
     public boolean deleteBook(int bookId) {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(TABLE_BOOKS, COLUMN_BOOK_ID + "=?", new String[]{String.valueOf(bookId)});

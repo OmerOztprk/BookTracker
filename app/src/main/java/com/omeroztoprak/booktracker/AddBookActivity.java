@@ -4,6 +4,7 @@ import static com.omeroztoprak.booktracker.DatabaseHelper.COLUMN_CATEGORY_NAME;
 import static com.omeroztoprak.booktracker.DatabaseHelper.TABLE_CATEGORIES;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ public class AddBookActivity extends AppCompatActivity {
     private Spinner spinnerCategory;
     private Button btnSaveBook;
     private DatabaseHelper databaseHelper;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,15 @@ public class AddBookActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getInt("user_id", -1);
+
+        if (userId == -1) {
+            Toast.makeText(this, "Kullanıcı oturumu açmamış", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         List<String> categoryList = getCategories();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categoryList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -46,15 +57,15 @@ public class AddBookActivity extends AppCompatActivity {
         btnSaveBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = editTextTitle.getText().toString();
-                String author = editTextAuthor.getText().toString();
+                String title = editTextTitle.getText().toString().trim();
+                String author = editTextAuthor.getText().toString().trim();
                 String category = spinnerCategory.getSelectedItem().toString();
-                String comment = editTextComment.getText().toString();
+                String comment = editTextComment.getText().toString().trim();
 
                 if (title.isEmpty() || author.isEmpty() || category.isEmpty()) {
                     Toast.makeText(AddBookActivity.this, "Lütfen tüm alanları doldurun", Toast.LENGTH_SHORT).show();
                 } else {
-                    boolean isInserted = databaseHelper.addBook(title, author, category, comment);
+                    boolean isInserted = databaseHelper.addBook(userId, title, author, category, comment);
                     if (isInserted) {
                         Toast.makeText(AddBookActivity.this, "Kitap kaydedildi", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(AddBookActivity.this, ListBooksActivity.class);

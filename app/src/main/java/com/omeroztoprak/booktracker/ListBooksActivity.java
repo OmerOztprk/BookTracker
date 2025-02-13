@@ -1,8 +1,11 @@
 package com.omeroztoprak.booktracker;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +19,7 @@ public class ListBooksActivity extends AppCompatActivity {
     private BookAdapter bookAdapter;
     private List<Book> bookList;
     private DatabaseHelper databaseHelper;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +31,26 @@ public class ListBooksActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        bookList = getBooksFromDatabase();
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getInt("user_id", -1);
+
+        if (userId == -1) {
+            Toast.makeText(this, "Kullanıcı oturumu açmamış", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        bookList = getBooksFromDatabase(userId);
         bookAdapter = new BookAdapter(bookList, databaseHelper, this);
         recyclerViewBooks.setAdapter(bookAdapter);
     }
 
-    private List<Book> getBooksFromDatabase() {
+    private List<Book> getBooksFromDatabase(int userId) {
         List<Book> books = new ArrayList<>();
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_BOOKS, null);
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_BOOKS + " WHERE "
+                + DatabaseHelper.COLUMN_USER_ID + " = ?", new String[]{String.valueOf(userId)});
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
